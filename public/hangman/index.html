@@ -1,15 +1,53 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" href="../css/styles.css" />
-    <style>
-    </style>
-</head>
-<body>
+  <head>
+    <link rel="stylesheet" href="../css/stylesHangman.css" />
+    <style></style>
+    <title>Hangman game</title>
+  </head>
+  <body>
+    <img src="../hangman.jpg" alt="Hangman" />
     <div class="content">
-        time to get to hanging.... I mean guessing...
+      time to get to hanging.... I mean guessing...
+    </div>
+    <div class="wrapper">
+      <h1>Hangman</h1>
+      <h2>Hangman Game</h2>
+      <p>
+        Use the alphabet below to guess the word, or click hint to get a clue.
+      </p>
+    </div>
+    <div class="guess-word" id="guess-word">Word to guess: _</div>
+    <div class="wrapper">
+      <form onclick="clickLetter(event)">
+        <button value="a" id="a">a</button>
+        <button value="b" id="b">b</button>
+        <button value="c" id="c">c</button>
+        <button value="d" id="d">d</button>
+        <button value="e" id="e">e</button>
+        <button value="f" id="f">f</button>
+        <button value="g" id="g">g</button>
+        <button value="h" id="h">h</button>
+        <button value="i" id="i">i</button>
+        <button value="j" id="j">j</button>
+        <button value="k" id="k">k</button>
+        <button value="l" id="l">l</button>
+        <button value="m" id="m">m</button>
+        <button value="n" id="n">n</button>
+        <button value="o" id="o">o</button>
+        <button value="p" id="p">p</button>
+        <button value="q" id="q">q</button>
+        <button value="r" id="r">r</button>
+        <button value="s" id="s">s</button>
+        <button value="t" id="t">t</button>
+        <button value="u" id="u">u</button>
+        <button value="v" id="v">v</button>
+        <button value="w" id="w">w</button>
+        <button value="x" id="x">x</button>
+        <button value="y" id="y">y</button>
+        <button value="z" id="z">z</button>
+      </form>
     </div>
     <script src="scripts.js"></script>
-</body>
-
+  </body>
 </html>
