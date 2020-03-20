@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 let words = require('./views/data');
 words = words.words;
-
+let letterPosArray = [];
+let currentWord = "";
 
 const getWord = (req, res) => {
     console.log('hi there');
@@ -18,52 +19,60 @@ const getWord = (req, res) => {
             return word;
         }
     })
+    currentWord = foundWord.word;
+    letterPosArray = [];
+
+    // Fill array with false for each letter in word
+    for (let i = 0; i < foundWord.letterCount; i++) {
+        letterPosArray.push(false);
+    }
+    console.log("starting letterPosArray:", letterPosArray)
+
     let wordToSend = { id: foundWord.id, letterCount: foundWord.letterCount }
     console.log('wordToSend: ', wordToSend);
     res.send(wordToSend);
 }
 
-const getStatus = (req, res) => {
+const handleGuess = (req, res) => {
     console.log('hi hi there', req.params);
     let letterFromFrontEnd = req.params.letter;
     let wordIdFromFrontEnd = req.params.wordId;
 
+    const wordObj = words.find(word => word.id === wordIdFromFrontEnd);
+    const word = wordObj.word;
+    const wordLetterArray = word.split("");
+    const letterCount = word.length;
 
-    const wordFromBackEnd = words.find(word => {
-        console.log('letterFromFrontEnd', letterFromFrontEnd);
-        console.log('wordIdFromFrontEnd', wordIdFromFrontEnd);
-        console.log('WoRD ', word);
-        if (word.id == wordIdFromFrontEnd) {
-            return word;
-        }
-        console.log('WORD: ', word)
-        let wordFromBackEnd = { word: wordFromBackEnd.word, id: wordFromBackEnd.id, letterCount: wordFromBackEnd.letterCount }
-        console.log('wordFromBackEnd: ', wordFromBackEnd);
-        res.send(wordFromBackEnd);
-    })
-    // letterFound: verify if letter from front-end is present in the word chosen from back-end
-    let letterFound = words.forEach(word => {
-        if (word.id == wordIdFromFrontEnd) {
-            for (i = o; i <= word.letterCount; i++) {
-                letterFound = word.includes(letterFromFrontEnd);
-            }
-            return word;
-        }
-        console.log('letterFound: ', letterFound)
-    })
 
-    // letterPosArray: array of booleans, 'true' when letter typed on front-end is part of the word chosen form back-end
-    let letterPosArray = words.forEach(word => {
-        if (word.id == wordIdFromFrontEnd.word) {
-            for (i = o; i <= word.letterCount; i++) {
-                letterPosArray = word.push(letterFromFrontEnd);
-            }
-            return letterPosArray;
+    wordLetterArray.forEach((letter, index) => {
+
+        if (letter === letterFromFrontEnd) {
+            letterPosArray[index] = true;
+
         }
-    })
+    });
     console.log('letterPosArray: ', letterPosArray);
-    res.send([letterPosArray]);
+
+    let playerWon = !letterPosArray.includes(false);
+    let textToDisplay = setTextToDisplay(letterPosArray);
+
+    console.log("*************TEXT: ", textToDisplay)
+    res.status(200).json({ textToDisplay, letterCount, playerWon });
 }
+const setTextToDisplay = letterPosArray => {
+    let currentWordArray = currentWord.split("");
+    let textToDisplay = letterPosArray.map((letterPositionBoolean, index) => {
+        if (letterPositionBoolean) {
+            return currentWordArray[index];
+
+        } else {
+            return "_";
+        }
+    });
+    return textToDisplay.join(", ");
+};
+
+
 
 const PORT = process.env.PORT || 8000;
 
@@ -80,7 +89,7 @@ express()
 
     // endpoints
     .get('/hangman/words', getWord)
-    .get('/hangman/guess/:wordId/:letter', getStatus)
+    .get('/hangman/guess/:wordId/:letter', handleGuess)
 
 
     .listen(PORT, () => console.log(`Listening on port ${PORT}`));
